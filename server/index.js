@@ -20,6 +20,18 @@ app.get("/", (req, res) => {
   res.status(200).json(note).end();
 });
 
+app.get("/edit/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const task = note.find((n) => n.id === id);
+  res.status(200).json(task);
+});
+
+app.put("/edit/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const task = note.find((n) => n.id === id);
+  res.status(200).json(task);
+});
+
 app.delete("/:id", (req, res) => {
   const ids = parseInt(req.params.id);
   const task = note.findIndex((task) => task.id === ids);
