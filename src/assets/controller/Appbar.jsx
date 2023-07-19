@@ -68,13 +68,14 @@ export default function ({ logedIN = false }) {
         style={{
           height: "10vh",
           width: "100%",
+          position: "absolute",
+          zIndex: 2,
         }}
       >
         <div
           style={{
             display: "flex",
             position: "relative",
-            paddingTop: "15px",
             justifyContent: "space-between",
             boxShadow: "0px 30px 40px 65px #422605",
             backgroundColor: "#422605",

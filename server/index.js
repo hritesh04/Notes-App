@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const app = express();
+app.use(bodyParser.json());
 app.use(cors());
 
 const note = [
@@ -18,6 +20,18 @@ const note = [
 
 app.get("/", (req, res) => {
   res.status(200).json(note).end();
+});
+
+app.get("/edit/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const task = note.find((n) => n.id === id);
+  res.status(200).json(task);
+});
+
+app.put("/edit/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const task = note.find((n) => n.id === id);
+  res.status(200).json(task);
 });
 
 app.delete("/:id", (req, res) => {

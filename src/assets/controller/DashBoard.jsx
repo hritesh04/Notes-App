@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect, createContext } from "react";
 import LandingPage from "./LandingPage";
-import { Button } from "@mui/material";
+import Card from "./Card";
+import { useNavigate } from "react-router-dom";
 
 export default function () {
   const [note, setNote] = useState([
@@ -13,38 +13,23 @@ export default function () {
     },
   ]);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     axios.get("http://localhost:3000/").then((response) => {
       setNote(response.data);
     });
   }, []);
 
-  function Card({ id, title, content }) {
-    function handleClick(id) {
-      axios
-        .delete(`http://localhost:3000/${id}`)
-        .then(() =>
-          setNote((prevNotes) => prevNotes.filter((note) => note.id !== id))
-        );
-    }
-    return (
-      <div className="notes" style={{ margin: "30px" }}>
-        <p>{title}</p>
-        <p>{content}</p>
-        <Button
-          variant="contained"
-          sx={{
-            color: "white",
-            backgroundColor: "#eb0202",
-            borderColor: "black",
-          }}
-          onClick={() => handleClick(id)}
-        >
-          DELETE
-        </Button>
-      </div>
-    );
-  }
+  const handleNoteClick = (id) => {
+    console.log(id);
+    navigate(`/edit/${id}`, {
+      state: {
+        id: id,
+        note: note,
+      },
+    });
+  };
 
   return (
     <>
@@ -53,7 +38,7 @@ export default function () {
           style={{
             display: "flex",
             position: "relative",
-            top: "17%",
+            top: "20%",
             paddingLeft: "30px",
           }}
         >
@@ -63,6 +48,7 @@ export default function () {
               id={note.id}
               title={note.title}
               content={note.content}
+              onClick={() => handleNoteClick(note.id)}
             />
           ))}
         </div>
