@@ -68,7 +68,7 @@ export default function ({ logedIN = false }) {
         style={{
           height: "10vh",
           width: "100%",
-          position: "absolute",
+          position: "relative",
           zIndex: 2,
         }}
       >
