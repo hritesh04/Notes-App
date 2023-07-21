@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const app = express();
+app.use(bodyParser.json());
 app.use(cors());
 
 const note = [
@@ -27,8 +29,11 @@ app.get("/edit/:id", (req, res) => {
 });
 
 app.put("/edit/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const task = note.find((n) => n.id === id);
+  const body = req.body.note;
+  const task = note.find((n) => n.id === body.id);
+  for (const props in body) {
+    task[props] = body[props];
+  }
   res.status(200).json(task);
 });
 

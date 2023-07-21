@@ -1,29 +1,18 @@
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-
-export default function ({ id, title, content, onClick }) {
+export default function ({ title, content, onClick, children, s, d }) {
   return (
-    <div className="notes" style={{ margin: "30px" }} onClick={onClick}>
-      <p>{title}</p>
-      <p>{content}</p>
-      <Button
-        variant="contained"
-        sx={{
-          color: "white",
-          backgroundColor: "#eb0202",
-          borderColor: "black",
-        }}
-        onClick={(event) => {
-          event.stopPropagation();
-          axios
-            .delete(`http://localhost:3000/${id}`)
-            .then(() =>
-              setNote((prevNotes) => prevNotes.filter((note) => note.id !== id))
-            );
-        }}
-      >
-        DELETE
-      </Button>
+    <div
+      style={{
+        ...d,
+        margin: "20px",
+        // border: "1px solid black",
+        borderRadius: "20px",
+        boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+      }}
+      onClick={onClick}
+    >
+      <p style={{ textAlign: "center" }}>{title}</p>
+      <p style={{ ...s, textAlign: "center" }}>{content}</p>
+      {children}
     </div>
   );
 }
