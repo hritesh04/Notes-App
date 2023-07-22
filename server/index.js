@@ -22,6 +22,11 @@ app.get("/", (req, res) => {
   res.status(200).json(note).end();
 });
 
+app.post("/edit", (req, res) => {
+  note.push({ id: note.length + 1, title: "", content: "" });
+  res.status(200).json(note[note.length]);
+});
+
 app.get("/edit/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const task = note.find((n) => n.id === id);
