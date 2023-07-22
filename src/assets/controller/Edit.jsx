@@ -5,6 +5,7 @@ import Card from "./Card";
 import Appbar from "./Appbar";
 import { Button } from "@mui/material";
 import { Save } from "@mui/icons-material";
+import Feature from "./Feature";
 
 export default function () {
   const location = useLocation();
@@ -14,7 +15,7 @@ export default function () {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const navigate = useNavigate();
-  const [notes, setNotes] = useState(note);
+  const [notes, setNotes] = useState(note || []);
 
   const handleNoteClick = async (id) => {
     await handleSumbmit();
@@ -27,9 +28,25 @@ export default function () {
     });
   };
 
+  const newNoteHandle = async () => {
+    const res = await axios.post(`http://localhost:3000/edit`);
+    console.log(res);
+    setNotes((prevNote) => [
+      ...prevNote,
+      { id: notes.length + 1, title: "", content: "" },
+    ]);
+    navigate(`/edit/${notes.length + 1}`, {
+      state: {
+        id: notes.length + 1,
+        note: { id: notes.length + 1, title: "", content: "" },
+      },
+    });
+  };
+
   const handleSumbmit = async () => {
     const title = titleRef.current.textContent;
     const node = Array.from(contentRef.current.childNodes);
+    console.log(node);
     let str = ``;
     node.map((n) => (str += n.textContent + "\n"));
     const note = {
@@ -98,7 +115,7 @@ export default function () {
                 onClick={() => handleNoteClick(n.id)}
               />
             ))}
-            <Button onClick={() => newNoteHandle}>+</Button>
+            {/* <Button onClick={() => newNoteHandle}>+</Button> */}
           </div>
           <div
             style={{
@@ -106,7 +123,7 @@ export default function () {
               maxHeight: "140%",
               marginLeft: "25px",
               boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-              padding: "20px",
+              paddingLeft: "20px",
             }}
           >
             <h1
@@ -130,7 +147,7 @@ export default function () {
               {data}
             </pre>
             <div style={{ position: "relative" }}>
-              <Button
+              {/* <Button
                 startIcon={<Save />}
                 size="large"
                 style={{
@@ -143,7 +160,8 @@ export default function () {
                   width: "100px",
                 }}
                 onClick={handleSumbmit}
-              ></Button>
+              ></Button> */}
+              <Feature subFun={handleSumbmit} noteFun={newNoteHandle} />
             </div>
           </div>
         </div>

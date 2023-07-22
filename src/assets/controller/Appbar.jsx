@@ -34,7 +34,6 @@ export default function ({ logedIN = false }) {
             color: "black",
           }}
           onClick={handleSignIn}
-          className="btn"
         >
           SIGN IN
         </Button>
@@ -45,7 +44,6 @@ export default function ({ logedIN = false }) {
             color: "black",
           }}
           onClick={handleSignUp}
-          className="btn"
         >
           SIGN UP
         </Button>
