@@ -3,42 +3,101 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Card from "./Card";
 import Appbar from "./Appbar";
-import { Button } from "@mui/material";
-import { Save } from "@mui/icons-material";
 import Feature from "./Feature";
 
 export default function () {
   const location = useLocation();
-  const { id, note } = location.state;
+  const { _id, note } = location.state;
   const [data, setData] = useState("");
   const [title, setTitle] = useState("");
+  const [img, setImg] = useState(false);
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const navigate = useNavigate();
   const [notes, setNotes] = useState(note || []);
+  const [file, setFile] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const handleNoteClick = async (id) => {
+  // const FileDrop = () => {
+  //   const handleDragEnter = (event) => {
+  //     event.preventDefault();
+  //     setIsDragging(true);
+  //   };
+
+  //   const handleDragLeave = (event) => {
+  //     event.preventDefault();
+  //     setIsDragging(false);
+  //   };
+
+  //   // const handleDrop = (event) => {
+  //   //   event.preventDefault();
+  //   //   setIsDragging(false);
+
+  //   //   const file = event.dataTransfer.files[0];
+  //   //   if (file) {
+  //   //     const reader = new FileReader();
+  //   //     reader.onload = (e) => {
+  //   //       setFileUrl(e.target.result);
+  //   //     };
+  //   //     reader.readAsDataURL(file);
+  //   //   }
+  //   // };
+
+  //   return (
+  //     <Card>
+  //       <div
+  //         style={{
+  //           width: "300px",
+  //           height: "300px",
+  //           border: isDragging ? "2px dashed #333" : "2px dashed #ccc",
+  //         }}
+  //         onDragEnter={handleDragEnter}
+  //         onDragLeave={handleDragLeave}
+  //         onDragOver={(event) => event.preventDefault()}
+  //         //onDrop={handleDrop}
+  //       >
+  //         {/* {fileUrl ? (
+  //           <img
+  //             src={fileUrl}
+  //             alt="Dropped File Preview"
+  //             style={{ maxWidth: "100%", maxHeight: "100%" }}
+  //           />
+  //         ) : (
+  //           <p>Drag and drop a file here</p>
+  //         )} */}
+  //       </div>
+  //     </Card>
+  //   );
+  // };
+
+  const handleNoteClick = async (_id) => {
     await handleSumbmit();
-    console.log(id);
-    navigate(`/edit/${id}`, {
+    console.log(_id);
+    navigate(`/edit/${_id}`, {
       state: {
-        id: id,
+        _id: _id,
         note: notes,
       },
     });
   };
 
   const newNoteHandle = async () => {
-    const res = await axios.post(`http://localhost:3000/edit`);
+    console.log("new note");
+    const res = await axios.post(
+      `http://localhost:3000/edit`,
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    );
     console.log(res);
-    setNotes((prevNote) => [
-      ...prevNote,
-      { id: notes.length + 1, title: "", content: "" },
-    ]);
-    navigate(`/edit/${notes.length + 1}`, {
+    setNotes((prevNote) => [...prevNote, res.data]);
+    navigate(`/edit/${res.data._id}`, {
       state: {
-        id: notes.length + 1,
-        note: { id: notes.length + 1, title: "", content: "" },
+        _id: res.data._id,
+        note: { _id: res.data._id, title: "", content: "" },
       },
     });
   };
@@ -50,31 +109,40 @@ export default function () {
     let str = ``;
     node.map((n) => (str += n.textContent + "\n"));
     const note = {
-      id: id,
       title: title,
       content: str,
     };
-    console.log(JSON.stringify(note));
-    const res = await axios.put(
-      `http://localhost:3000/edit/${id}`,
+    console.log(note);
+    const res = await axios.patch(
+      `http://localhost:3000/edit/${_id}`,
       {
         note: note,
       },
-      { headers: { "Content-Type": "application/json" } }
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
     );
+    console.log(res.data);
     setNotes((prevNote) =>
       prevNote.map((n) =>
-        n.id === id ? { ...n, title: title, content: str } : n
+        n._id === _id ? { ...n, title: title, content: str } : n
       )
     );
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/edit/${id}`).then((response) => {
-      const { title, content } = response.data;
-      setTitle(title);
-      setData(content);
-    });
+    axios
+      .get(`http://localhost:3000/edit/${_id}`, {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      })
+      .then((response) => {
+        const { title, content } = response.data;
+        setTitle(title);
+        setData(content);
+      });
   }, [navigate]);
 
   return (
@@ -98,7 +166,7 @@ export default function () {
           <div
             style={{
               height: "99%",
-              width: "15%",
+              width: "19%",
               paddingTop: "20px",
               overflow: "auto",
               margin: "-15px",
@@ -107,15 +175,17 @@ export default function () {
           >
             {notes.map((n) => (
               <Card
-                key={n.id}
-                id={n.id}
+                key={n._id}
+                id={n._id}
                 title={n.title}
                 content={n.content}
-                d={{ height: "100px", padding: "7px", overflow: "hidden" }}
-                onClick={() => handleNoteClick(n.id)}
+                d={{
+                  height: "109px",
+                  overflow: "hidden",
+                }}
+                onClick={() => handleNoteClick(n._id)}
               />
             ))}
-            {/* <Button onClick={() => newNoteHandle}>+</Button> */}
           </div>
           <div
             style={{
@@ -147,22 +217,13 @@ export default function () {
               {data}
             </pre>
             <div style={{ position: "relative" }}>
-              {/* <Button
-                startIcon={<Save />}
-                size="large"
-                style={{
-                  position: "fixed",
-                  bottom: "10%",
-                  color: "green",
-                  right: "10%",
-                  borderRadius: "150px",
-                  height: "100px",
-                  width: "100px",
-                }}
-                onClick={handleSumbmit}
-              ></Button> */}
-              <Feature subFun={handleSumbmit} noteFun={newNoteHandle} />
+              <Feature
+                subFun={handleSumbmit}
+                addImg={() => setFile(!file)}
+                noteFun={newNoteHandle}
+              />
             </div>
+            {file && <FileDrop />}
           </div>
         </div>
       </div>

@@ -2,30 +2,35 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
 import { Button } from "@mui/material";
+import axios from "axios";
 
 export default function ({ logedIN }) {
   const [login, setLogin] = useState("");
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const accounts = [
-    { id: "abc", password: 123 },
-    { id: "qwe", password: 456 },
-  ];
-
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
+    console.log("event triggered");
     event.preventDefault();
-    const account = accounts.find((acc) => acc.id === user);
-    if (account !== undefined) {
-      if ((account.password = parseInt(pass))) {
+    try {
+      const res = await axios.post("http://localhost:3000/signup", {
+        credentials: {
+          username: user,
+          password: pass,
+          email: email,
+        },
+      });
+      console.log(res);
+      if (res.status === 200) {
         logedIN(true);
+        console.log(res.data);
+        localStorage.setItem("token", res.data.token);
         navigate("/dashboard");
-      } else {
-        setLogin("Wrong Password");
       }
-    } else {
-      setLogin("Invalid Credentials");
+    } catch (error) {
+      setLogin(error.response?.data?.message);
     }
   };
 
@@ -67,6 +72,13 @@ export default function ({ logedIN }) {
           placeholder="password"
           style={{ margin: "5px" }}
           onChange={(event) => setPass(event.target.value)}
+        />
+        <br />
+        <input
+          type="email"
+          placeholder="E-Mail"
+          style={{ margin: "5px" }}
+          onChange={(event) => setEmail(event.target.value)}
         />
         <br />
         <Button

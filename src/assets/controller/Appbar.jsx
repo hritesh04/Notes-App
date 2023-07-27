@@ -21,6 +21,7 @@ export default function ({ logedIN = false }) {
   };
 
   const handleLogOut = () => {
+    localStorage.removeItem("token");
     navigate("/");
   };
 
@@ -55,7 +56,12 @@ export default function ({ logedIN = false }) {
     return (
       <>
         <p style={{ marginRight: "10px" }}>Name</p>
-        <button onClick={handleLogOut}>LOGOUT</button>
+        <Button
+          style={{ backgroundColor: "#ffff", color: "black" }}
+          onClick={handleLogOut}
+        >
+          LOGOUT
+        </Button>
       </>
     );
   }
