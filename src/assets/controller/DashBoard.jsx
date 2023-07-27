@@ -6,26 +6,39 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
 export default function () {
-  const [notes, setNotes] = useState([
-    {
-      id: 123,
-      title: "cytu",
-      description: "ufjvvh",
-    },
-  ]);
+  const [notes, setNotes] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:3000/").then((response) => {
-      setNotes(response.data);
-    });
+    axios
+      .get("http://localhost:3000/", {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        console.log(response.data.notes);
+        setNotes(response.data.notes);
+      });
   }, []);
 
-  const handleNoteClick = (id) => {
-    navigate(`/edit/${id}`, {
+  const newNoteHandle = async () => {
+    const res = await axios.post(`http://localhost:3000/edit`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
+    setNotes((prevNote) => [
+      ...prevNote,
+      { id: notes.length + 1, title: "", content: "" },
+    ]);
+  };
+
+  const handleNoteClick = (_id) => {
+    navigate(`/edit/${_id}`, {
       state: {
-        id: id,
+        _id: _id,
         note: notes,
       },
     });
@@ -38,18 +51,22 @@ export default function () {
           style={{
             display: "flex",
             position: "relative",
-            top: "25%",
+            top: "20%",
             paddingLeft: "30px",
           }}
         >
           {notes.map((note) => {
             return (
               <Card
-                key={note.id}
+                key={note._id}
                 title={note.title}
                 content={note.content}
-                onClick={() => handleNoteClick(note.id)}
-                s={{ overflow: "hidden", height: "70px", width: "170px" }}
+                onClick={() => handleNoteClick(note._id)}
+                s={{
+                  overflow: "hidden",
+                  height: "70px",
+                  width: "170px",
+                }}
               >
                 <Button
                   variant="contained"
@@ -59,14 +76,21 @@ export default function () {
                     borderColor: "black",
                     width: "100%",
                     borderRadius: "20px",
+                    position: "absolute",
+                    bottom: "0%",
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
                     axios
-                      .delete(`http://localhost:3000/${note.id}`)
+                      .delete(`http://localhost:3000/${note._id}`, {
+                        headers: {
+                          Authorization:
+                            "Bearer " + localStorage.getItem("token"),
+                        },
+                      })
                       .then(() =>
                         setNotes((prevNotes) =>
-                          prevNotes.filter((n) => n.id !== note.id)
+                          prevNotes.filter((n) => n._id !== note._id)
                         )
                       );
                   }}
@@ -76,6 +100,16 @@ export default function () {
               </Card>
             );
           })}
+          <Card
+            onClick={newNoteHandle}
+            s={{
+              overflow: "hidden",
+              height: "70px",
+              width: "170px",
+              fontSize: "50px",
+            }}
+            c={"+"}
+          ></Card>
         </div>
       </LandingPage>
     </>
