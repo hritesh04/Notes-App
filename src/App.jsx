@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import DashBoard from "./assets/controller/DashBoard";
-import LandingPage from "./assets/controller/LandingPage";
-import Edit from "./assets/controller/Edit";
-import Card from "./assets/controller/Card";
-import Feature from "./assets/controller/Feature";
+import DashBoard from "./assets/Components/DashBoard";
+import LandingPage from "./assets/Components/LandingPage";
+import Edit from "./assets/Components/Edit";
+import Card from "./assets/Components/Card";
+import Feature from "./assets/Components/Feature";
 
 function App() {
   return (
