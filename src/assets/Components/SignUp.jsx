@@ -2,45 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
 import { Button } from "@mui/material";
-import axios from "axios";
+import handleSignUp from "../controller/handleSignUp";
 
 export default function ({ logedIN }) {
   const [login, setLogin] = useState("");
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    try {
-      const res = await axios.post(
-        "http://localhost:3000/signin",
-        {},
-        {
-          headers: {
-            username: user,
-            password: pass,
-          },
-        }
-      );
-      console.log(res);
-      if (res.status === 200) {
-        logedIN(true);
-        localStorage.setItem("token", res.data.token);
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      setLogin(error.response.data.message);
-    }
-    // const account = accounts.find((acc) => acc.id === user);
-    // if (account !== undefined) {
-    //   if ((account.password = parseInt(pass))) {
-    //   } else {
-    //     setLogin("Wrong Password");
-    //   }
-    // } else {
-    //   setLogin("Invalid Credentials");
-    // }
+    handleSignUp(user, pass, email, logedIN, navigate, setLogin);
   };
 
   return (
@@ -83,6 +56,13 @@ export default function ({ logedIN }) {
           onChange={(event) => setPass(event.target.value)}
         />
         <br />
+        <input
+          type="email"
+          placeholder="E-Mail"
+          style={{ margin: "5px" }}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+        <br />
         <Button
           style={{
             marginTop: "10px",
@@ -92,9 +72,9 @@ export default function ({ logedIN }) {
           }}
           onClick={handleLogin}
         >
-          Submit
+          REGISTER
         </Button>
-        <h3 style={{ color: "red" }}>{login}</h3>
+        <h1>{login}</h1>
       </Card>
     </>
   );

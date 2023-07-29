@@ -4,6 +4,9 @@ import axios from "axios";
 import Card from "./Card";
 import Appbar from "./Appbar";
 import Feature from "./Feature";
+import handleNoteClick from "../controller/handleNoteClick";
+import newNoteHandle from "../controller/newNoteHandle";
+import handleSubmit from "../controller/handleSubmit";
 
 export default function () {
   const location = useLocation();
@@ -70,30 +73,14 @@ export default function () {
   //   );
   // };
 
-  const handleNoteClick = async (_id) => {
-    await handleSumbmit();
-    console.log(_id);
-    navigate(`/edit/${_id}`, {
-      state: {
-        _id: _id,
-        note: notes,
-      },
-    });
+  const noteSwitch = async (_id) => {
+    await save();
+    handleNoteClick(navigate, note, _id);
   };
 
-  const newNoteHandle = async () => {
+  const addNote = async () => {
     console.log("new note");
-    const res = await axios.post(
-      `http://localhost:3000/edit`,
-      {},
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      }
-    );
-    console.log(res);
-    setNotes((prevNote) => [...prevNote, res.data]);
+    const res = await newNoteHandle(setNotes);
     navigate(`/edit/${res.data._id}`, {
       state: {
         _id: res.data._id,
@@ -102,35 +89,14 @@ export default function () {
     });
   };
 
-  const handleSumbmit = async () => {
+  const save = async () => {
     const title = titleRef.current.textContent;
     const node = Array.from(contentRef.current.childNodes);
+    console.log(contentRef.current);
     console.log(node);
     let str = ``;
     node.map((n) => (str += n.textContent + "\n"));
-    const note = {
-      title: title,
-      content: str,
-    };
-    console.log(note);
-    const res = await axios.patch(
-      `http://localhost:3000/edit/${_id}`,
-      {
-        note: note,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      }
-    );
-    console.log(res.data);
-    setNotes((prevNote) =>
-      prevNote.map((n) =>
-        n._id === _id ? { ...n, title: title, content: str } : n
-      )
-    );
+    await handleSubmit(title, str, setNotes, _id);
   };
 
   useEffect(() => {
@@ -183,7 +149,7 @@ export default function () {
                   height: "109px",
                   overflow: "hidden",
                 }}
-                onClick={() => handleNoteClick(n._id)}
+                onClick={() => noteSwitch(n._id)}
               />
             ))}
           </div>
@@ -214,13 +180,13 @@ export default function () {
               }}
               ref={contentRef}
             >
-              {data}
+              <div>{data}</div>
             </pre>
             <div style={{ position: "relative" }}>
               <Feature
-                subFun={handleSumbmit}
+                subFun={save}
                 addImg={() => setFile(!file)}
-                noteFun={newNoteHandle}
+                noteFun={addNote}
               />
             </div>
             {file && <FileDrop />}

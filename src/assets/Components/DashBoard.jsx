@@ -1,9 +1,12 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
-import LandingPage from "./LandingPage";
-import Card from "./Card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import axios from "axios";
+import Card from "./Card";
+import LandingPage from "./LandingPage";
+import handleNoteClick from "../controller/handleNoteClick";
+import newNoteHandle from "../controller/newNoteHandle";
+import handleNoteDelete from "../controller/handleNoteDelete";
 
 export default function () {
   const [notes, setNotes] = useState([]);
@@ -23,27 +26,6 @@ export default function () {
       });
   }, []);
 
-  const newNoteHandle = async () => {
-    const res = await axios.post(`http://localhost:3000/edit`, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
-    setNotes((prevNote) => [
-      ...prevNote,
-      { id: notes.length + 1, title: "", content: "" },
-    ]);
-  };
-
-  const handleNoteClick = (_id) => {
-    navigate(`/edit/${_id}`, {
-      state: {
-        _id: _id,
-        note: notes,
-      },
-    });
-  };
-
   return (
     <>
       <LandingPage logedIN={true}>
@@ -61,7 +43,7 @@ export default function () {
                 key={note._id}
                 title={note.title}
                 content={note.content}
-                onClick={() => handleNoteClick(note._id)}
+                onClick={() => handleNoteClick(navigate, notes, note._id)}
                 s={{
                   overflow: "hidden",
                   height: "70px",
@@ -81,18 +63,7 @@ export default function () {
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
-                    axios
-                      .delete(`http://localhost:3000/${note._id}`, {
-                        headers: {
-                          Authorization:
-                            "Bearer " + localStorage.getItem("token"),
-                        },
-                      })
-                      .then(() =>
-                        setNotes((prevNotes) =>
-                          prevNotes.filter((n) => n._id !== note._id)
-                        )
-                      );
+                    handleNoteDelete(setNotes, note._id);
                   }}
                 >
                   DELETE
@@ -101,7 +72,7 @@ export default function () {
             );
           })}
           <Card
-            onClick={newNoteHandle}
+            onClick={() => newNoteHandle(setNotes)}
             s={{
               overflow: "hidden",
               height: "70px",

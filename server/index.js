@@ -3,57 +3,12 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const { Users, Notes } = require("./db/db");
+const { authentication, SECRET } = require("./middleware/authentication");
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
-
-const SECRET = "AceSeCr3T";
-
-const userSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-  email: String,
-});
-
-const noteSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
-  title: String,
-  content: String,
-});
-
-const authentication = (req, res, next) => {
-  const userJwt = req.headers.authorization;
-  if (userJwt) {
-    const token = userJwt.split(" ")[1];
-    jwt.verify(token, SECRET, (err, user) => {
-      if (err) {
-        res.sendStatus(403);
-      }
-      req.userId = user.id;
-      console.log(user);
-      next();
-    });
-  } else {
-    res.sendStatus(401);
-  }
-};
-
-const note = [
-  {
-    id: 1,
-    title: "Hello",
-    content: "Kya haal",
-  },
-  {
-    id: 2,
-    title: "World",
-    content: "haal kya",
-  },
-];
-
-const Users = mongoose.model("Users", userSchema);
-const Notes = mongoose.model("Notes", noteSchema);
 
 mongoose
   .connect("mongodb+srv://acerowl:mv7QbClG6XPacUML@notes0.nd610wc.mongodb.net/")
@@ -61,6 +16,7 @@ mongoose
 
 app.get("/", authentication, async (req, res) => {
   const user = await Notes.find({ user: req.userId });
+  console.log(user);
   if (user) {
     res.status(200).json({ notes: user || [] });
   } else {
@@ -71,6 +27,7 @@ app.get("/", authentication, async (req, res) => {
 app.post("/signin", async (req, res) => {
   const { username, password } = req.headers;
   const user = await Users.findOne({ username, password });
+  console.log(user);
   if (user) {
     const token = jwt.sign({ id: user._id }, SECRET);
     console.log(token);
@@ -81,12 +38,14 @@ app.post("/signin", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
+  console.log(req.body);
   const { username, password, email } = req.body.credentials;
   const user = await Users.findOne({ username });
   if (user) {
     res.status(401).json({ message: "User already Exists" });
   } else {
     const newUser = new Users({ username, password, email });
+    console.log(newUser);
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, SECRET);
     console.log(token);
@@ -95,6 +54,7 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/edit", authentication, async (req, res) => {
+  console.log("New Note");
   const newNote = new Notes({ user: req.userId });
   await newNote.save();
   console.log(newNote);
@@ -104,6 +64,7 @@ app.post("/edit", authentication, async (req, res) => {
 app.get("/edit/:noteId", authentication, async (req, res) => {
   const { noteId } = req.params;
   const note = await Notes.findOne({ _id: noteId, user: req.userId });
+  console.log(note);
   if (note === []) {
     res.status(402).json({ message: "Note not found" });
   }
@@ -132,6 +93,7 @@ app.delete("/:noteId", authentication, async (req, res) => {
   if (note) {
     res.status(200).json(note);
   } else {
+    console.log("error");
     res.status(400).json({ message: "Not Deleted" });
   }
 });
