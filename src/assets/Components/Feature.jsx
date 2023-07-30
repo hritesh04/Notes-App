@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
-export default function ({ subFun, noteFun, addImg }) {
+export default function ({ subFun, noteFun }) {
   const [dropDown, setDropDown] = useState(false);
 
   const features = [
@@ -12,12 +12,6 @@ export default function ({ subFun, noteFun, addImg }) {
     },
     {
       id: 2,
-      type: "Add Image",
-      icon: "IMG",
-      handleClick: addImg,
-    },
-    {
-      id: 3,
       type: "SAVE",
       icon: "IMG",
       handleClick: subFun,

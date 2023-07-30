@@ -13,65 +13,10 @@ export default function () {
   const { _id, note } = location.state;
   const [data, setData] = useState("");
   const [title, setTitle] = useState("");
-  const [img, setImg] = useState(false);
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const navigate = useNavigate();
   const [notes, setNotes] = useState(note || []);
-  const [file, setFile] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-
-  // const FileDrop = () => {
-  //   const handleDragEnter = (event) => {
-  //     event.preventDefault();
-  //     setIsDragging(true);
-  //   };
-
-  //   const handleDragLeave = (event) => {
-  //     event.preventDefault();
-  //     setIsDragging(false);
-  //   };
-
-  //   // const handleDrop = (event) => {
-  //   //   event.preventDefault();
-  //   //   setIsDragging(false);
-
-  //   //   const file = event.dataTransfer.files[0];
-  //   //   if (file) {
-  //   //     const reader = new FileReader();
-  //   //     reader.onload = (e) => {
-  //   //       setFileUrl(e.target.result);
-  //   //     };
-  //   //     reader.readAsDataURL(file);
-  //   //   }
-  //   // };
-
-  //   return (
-  //     <Card>
-  //       <div
-  //         style={{
-  //           width: "300px",
-  //           height: "300px",
-  //           border: isDragging ? "2px dashed #333" : "2px dashed #ccc",
-  //         }}
-  //         onDragEnter={handleDragEnter}
-  //         onDragLeave={handleDragLeave}
-  //         onDragOver={(event) => event.preventDefault()}
-  //         //onDrop={handleDrop}
-  //       >
-  //         {/* {fileUrl ? (
-  //           <img
-  //             src={fileUrl}
-  //             alt="Dropped File Preview"
-  //             style={{ maxWidth: "100%", maxHeight: "100%" }}
-  //           />
-  //         ) : (
-  //           <p>Drag and drop a file here</p>
-  //         )} */}
-  //       </div>
-  //     </Card>
-  //   );
-  // };
 
   const noteSwitch = async (_id) => {
     await save();
@@ -183,13 +128,8 @@ export default function () {
               <div>{data}</div>
             </pre>
             <div style={{ position: "relative" }}>
-              <Feature
-                subFun={save}
-                addImg={() => setFile(!file)}
-                noteFun={addNote}
-              />
+              <Feature subFun={save} noteFun={addNote} />
             </div>
-            {file && <FileDrop />}
           </div>
         </div>
       </div>

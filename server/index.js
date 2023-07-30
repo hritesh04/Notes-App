@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const { Users, Notes } = require("./db/db");
 const { authentication, SECRET } = require("./middleware/authentication");
 const app = express();
@@ -10,15 +11,15 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
-mongoose
-  .connect("mongodb+srv://acerowl:mv7QbClG6XPacUML@notes0.nd610wc.mongodb.net/")
-  .then(() => console.log("DB Connected"));
+console.log(process.env.DB_LINK);
+
+mongoose.connect(process.env.DB_LINK).then(() => console.log("DB Connected"));
 
 app.get("/", authentication, async (req, res) => {
   const user = await Notes.find({ user: req.userId });
   console.log(user);
   if (user) {
-    res.status(200).json({ notes: user || [] });
+    res.status(200).json({ user });
   } else {
     res.status(402).json({ message: "User not Found !" });
   }
@@ -31,7 +32,7 @@ app.post("/signin", async (req, res) => {
   if (user) {
     const token = jwt.sign({ id: user._id }, SECRET);
     console.log(token);
-    res.status(200).json({ message: "login successfully", token });
+    res.status(200).json({ message: "login successfully", token, username });
   } else {
     res.status(404).json({ message: "Invalid Credentials" });
   }

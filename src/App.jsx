@@ -12,8 +12,6 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/edit/:noteId" element={<Edit />} />
-        <Route path="/card" element={<Card />} />
-        <Route path="/features" element={<Feature />} />
       </Routes>
     </Router>
   );
