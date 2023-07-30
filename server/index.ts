@@ -1,23 +1,35 @@
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-const { Users, Notes } = require("./db/db");
-const { authentication, SECRET } = require("./middleware/authentication");
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import { Users, Notes } from "./db/db";
+import { authentication } from "./middleware/authentication";
+
 const app = express();
 app.use(express.json());
-app.use(bodyParser.json());
 app.use(cors());
 
-console.log(process.env.DB_LINK);
+const SECRET = process.env.SECRET;
 
 mongoose.connect(process.env.DB_LINK).then(() => console.log("DB Connected"));
 
+interface CreateNewUser {
+  username: String;
+  password: String;
+  email: string;
+}
+
+interface UpdateNote {
+  title: string;
+  content: string;
+  user: string;
+}
+
 app.get("/", authentication, async (req, res) => {
-  const user = await Notes.find({ user: req.userId });
-  console.log(user);
+  const userId = req.headers["userId"];
+  const user = await Notes.find({ user: userId });
   if (user) {
     res.status(200).json({ user });
   } else {
@@ -28,7 +40,6 @@ app.get("/", authentication, async (req, res) => {
 app.post("/signin", async (req, res) => {
   const { username, password } = req.headers;
   const user = await Users.findOne({ username, password });
-  console.log(user);
   if (user) {
     const token = jwt.sign({ id: user._id }, SECRET);
     console.log(token);
@@ -39,34 +50,35 @@ app.post("/signin", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-  console.log(req.body);
-  const { username, password, email } = req.body.credentials;
-  const user = await Users.findOne({ username });
+  const input: CreateNewUser = req.body.credentials;
+  const user = await Users.findOne({ username: input.username });
   if (user) {
     res.status(401).json({ message: "User already Exists" });
   } else {
-    const newUser = new Users({ username, password, email });
-    console.log(newUser);
+    const newUser = new Users({
+      username: input.username,
+      password: input.password,
+      email: input.email,
+    });
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, SECRET);
-    console.log(token);
     res.status(200).json({ message: "SignUp successfully", token });
   }
 });
 
 app.post("/edit", authentication, async (req, res) => {
-  console.log("New Note");
-  const newNote = new Notes({ user: req.userId });
+  const userId = req.headers["userId"];
+  const newNote = new Notes({ user: userId });
   await newNote.save();
-  console.log(newNote);
   res.status(200).json(newNote);
 });
 
 app.get("/edit/:noteId", authentication, async (req, res) => {
   const { noteId } = req.params;
-  const note = await Notes.findOne({ _id: noteId, user: req.userId });
-  console.log(note);
-  if (note === []) {
+  const userId = req.headers["userId"];
+
+  const note = await Notes.findOne({ _id: noteId, user: userId });
+  if (!note) {
     res.status(402).json({ message: "Note not found" });
   }
   res.status(200).json(note);
@@ -74,9 +86,11 @@ app.get("/edit/:noteId", authentication, async (req, res) => {
 
 app.patch("/edit/:noteId", authentication, async (req, res) => {
   const { noteId } = req.params;
-  const body = req.body.note;
+  const userId = req.headers["userId"];
+
+  const body: UpdateNote = req.body.note;
   const updatedNote = await Notes.findOneAndUpdate(
-    { _id: noteId, user: req.userId },
+    { _id: noteId, user: userId },
     { title: body.title, content: body.content }
   ).catch((error) => {
     res.json({ error: "Failed to update" });
@@ -90,7 +104,9 @@ app.patch("/edit/:noteId", authentication, async (req, res) => {
 
 app.delete("/:noteId", authentication, async (req, res) => {
   const { noteId } = req.params;
-  const note = await Notes.findOneAndDelete({ _id: noteId, user: req.userId });
+  const userId = req.headers["userId"];
+
+  const note = await Notes.findOneAndDelete({ _id: noteId, user: userId });
   if (note) {
     res.status(200).json(note);
   } else {
