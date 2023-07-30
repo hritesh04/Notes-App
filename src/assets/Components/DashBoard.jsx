@@ -21,8 +21,8 @@ export default function () {
         },
       })
       .then((response) => {
-        console.log(response.data.notes);
-        setNotes(response.data.notes);
+        console.log(response.data);
+        setNotes(response.data.user);
       });
   }, []);
 
