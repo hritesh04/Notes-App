@@ -51,9 +51,10 @@ export default function () {
                 }}
               >
                 <Button
-                  style={{
+                  variant="contained"
+                  sx={{
                     color: "white",
-                    backgroundColor: "#422605",
+                    backgroundColor: "#eb0202",
                     borderColor: "black",
                     width: "100%",
                     borderRadius: "20px",

@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { z } from "zod";
 
 const SECRET = process.env.SECRET;
 
