@@ -17,17 +17,17 @@ type NoteType = {
 
 export default function () {
   const location = useLocation();
-  const { _id, note }: { _id: string; note: NoteType[] } = location.state;
+  const { _id, note }: { _id: string; note: NoteType } = location.state;
   const [data, setData] = useState("");
   const [title, setTitle] = useState("");
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const navigate = useNavigate();
-  const [notes, setNotes] = useState(note || []);
+  const [notes, setNotes] = useState<NoteType[]>([note]);
 
   const noteSwitch = async (_id) => {
     await save();
-    handleNoteClick(navigate, note, _id);
+    handleNoteClick({ navigate, notes: note, _id });
   };
 
   const addNote = async () => {

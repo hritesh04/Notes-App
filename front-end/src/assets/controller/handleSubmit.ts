@@ -1,5 +1,18 @@
 import axios from "axios";
-const handleSubmit = async (title, str, setNotes, _id) => {
+import { Dispatch } from "react";
+
+type NoteType = {
+  _id: string;
+  user: string;
+  title: string;
+  content: string;
+};
+const handleSubmit = async (
+  title: string,
+  str: string,
+  setNotes: Dispatch<React.SetStateAction<NoteType[]>>,
+  _id: string
+) => {
   const res = await axios.patch(
     `http://localhost:3000/edit/${_id}`,
     {

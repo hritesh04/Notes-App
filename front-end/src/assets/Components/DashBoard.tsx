@@ -51,7 +51,9 @@ export default function () {
                 key={note._id}
                 title={note.title}
                 content={note.content}
-                onClick={() => handleNoteClick(navigate, notes, note._id)}
+                onClick={() =>
+                  handleNoteClick({ navigate, notes, _id: note._id })
+                }
                 s={{
                   overflow: "hidden",
                   height: "70px",

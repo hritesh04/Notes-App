@@ -1,5 +1,14 @@
+type NoteType = {
+  _id: string;
+  user: string;
+  title: string;
+  content: string;
+};
 import axios from "axios";
-const handleNoteDelete = async (setNotes, _id) => {
+const handleNoteDelete = async (
+  setNotes: React.Dispatch<React.SetStateAction<NoteType[]>>,
+  _id: string
+) => {
   axios
     .delete(`http://localhost:3000/${_id}`, {
       headers: {
