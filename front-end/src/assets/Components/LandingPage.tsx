@@ -1,5 +1,12 @@
+import { ReactElement } from "react";
 import Appbar from "./Appbar";
-export default function ({ children, logedIN }) {
+export default function ({
+  children,
+  logedIN,
+}: {
+  children?: ReactElement;
+  logedIN: boolean;
+}) {
   return (
     <>
       <Appbar logedIN={logedIN} />

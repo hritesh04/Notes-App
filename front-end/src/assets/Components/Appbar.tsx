@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import SignIN from "./SignIN";
 import SignUp from "./SignUp";
 
-export default function ({ logedIN = false }) {
+export default function ({ logedIN = false }: { logedIN: boolean }) {
   const [isSignnedIN, setIsSIgnnedIN] = useState(logedIN);
   const [signinPage, setSigninPage] = useState(false);
   const [signupPage, setSignupPage] = useState(false);

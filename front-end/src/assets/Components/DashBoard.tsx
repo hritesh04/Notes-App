@@ -8,8 +8,15 @@ import handleNoteClick from "../controller/handleNoteClick";
 import newNoteHandle from "../controller/newNoteHandle";
 import handleNoteDelete from "../controller/handleNoteDelete";
 
+type NoteType = {
+  _id: string;
+  user: string;
+  title: string;
+  content: string;
+};
+
 export default function () {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<NoteType[]>([]);
 
   const navigate = useNavigate();
 
@@ -40,6 +47,7 @@ export default function () {
           {notes.map((note) => {
             return (
               <Card
+                id={note._id}
                 key={note._id}
                 title={note.title}
                 content={note.content}
@@ -80,6 +88,8 @@ export default function () {
               fontSize: "50px",
             }}
             c={"+"}
+            title={""}
+            content={""}
           ></Card>
         </div>
       </LandingPage>

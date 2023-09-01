@@ -7,7 +7,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* <Route path="/" element={<LandingPage />} /> */}
+        <Route path="/" element={<LandingPage logedIN={false} />} />
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/edit/:noteId" element={<Edit />} />
       </Routes>

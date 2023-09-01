@@ -22,11 +22,13 @@ interface CreateNewUser {
   email: string;
 }
 
-interface UpdateNote {
+interface Update {
   title: string;
   content: string;
   user: string;
 }
+
+type UpdateNote = Partial<Update>;
 
 const LogInInput = z.object({
   username: z.string(),
