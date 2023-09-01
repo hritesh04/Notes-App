@@ -1,6 +1,16 @@
 import axios from "axios";
+import { Dispatch } from "react";
 
-const newNoteHandle = async (setNotes) => {
+type NoteType = {
+  _id: string;
+  user: string;
+  title: string;
+  content: string;
+};
+
+const newNoteHandle = async (
+  setNotes: Dispatch<React.SetStateAction<NoteType[]>>
+) => {
   const res = await axios.post(
     `http://localhost:3000/edit`,
     {},

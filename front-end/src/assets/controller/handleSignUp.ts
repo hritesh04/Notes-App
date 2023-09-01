@@ -1,6 +1,15 @@
 import axios from "axios";
+import { Dispatch } from "react";
+import { NavigateFunction } from "react-router-dom";
 
-const handleSignUp = async (user, pass, email, logedIN, navigate, setLogin) => {
+const handleSignUp = async (
+  user: string,
+  pass: string,
+  email: string,
+  logedIN: boolean,
+  navigate: NavigateFunction,
+  setLogin: Dispatch<React.SetStateAction<string>>
+) => {
   try {
     const res = await axios.post("http://localhost:3000/signup", {
       credentials: {
@@ -11,7 +20,7 @@ const handleSignUp = async (user, pass, email, logedIN, navigate, setLogin) => {
     });
     console.log(res);
     if (res.status === 200) {
-      logedIN(true);
+      logedIN = true;
       console.log(res.data);
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
