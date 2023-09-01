@@ -8,9 +8,16 @@ import handleNoteClick from "../controller/handleNoteClick";
 import newNoteHandle from "../controller/newNoteHandle";
 import handleSubmit from "../controller/handleSubmit";
 
+type NoteType = {
+  _id: string;
+  user: string;
+  title: string;
+  content: string;
+};
+
 export default function () {
   const location = useLocation();
-  const { _id, note } = location.state;
+  const { _id, note }: { _id: string; note: NoteType[] } = location.state;
   const [data, setData] = useState("");
   const [title, setTitle] = useState("");
   const contentRef = useRef(null);
@@ -36,7 +43,7 @@ export default function () {
 
   const save = async () => {
     const title = titleRef.current.textContent;
-    const node = Array.from(contentRef.current.childNodes);
+    const node: HTMLElement[] = Array.from(contentRef.current.childNodes);
     console.log(contentRef.current);
     console.log(node);
     let str = ``;

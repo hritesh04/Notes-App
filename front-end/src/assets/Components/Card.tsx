@@ -1,8 +1,18 @@
-export default function ({ title, content, onClick, children, s, d, c }) {
+interface CardProps {
+  id?: string;
+  title: string;
+  content: string;
+  onClick: () => void;
+  children?: React.ReactNode;
+  s?: React.CSSProperties;
+  d?: React.CSSProperties;
+  c?: string;
+}
+export default function (props: CardProps) {
   return (
     <div
       style={{
-        ...d,
+        ...props.d,
         minWidth: "180px",
         maxWidth: "180px",
         margin: "30px",
@@ -10,7 +20,7 @@ export default function ({ title, content, onClick, children, s, d, c }) {
         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         position: "relative",
       }}
-      onClick={onClick}
+      onClick={props.onClick}
     >
       <p
         style={{
@@ -21,19 +31,19 @@ export default function ({ title, content, onClick, children, s, d, c }) {
           overflow: "hidden",
         }}
       >
-        {title}
+        {props.title}
       </p>
       <p
         style={{
-          ...s,
+          ...props.s,
           display: "flex",
           alignItems: "flexStart",
           justifyContent: "center",
         }}
       >
-        {content || c}
+        {props.content || props.c}
       </p>
-      {children}
+      {props.children}
     </div>
   );
 }
