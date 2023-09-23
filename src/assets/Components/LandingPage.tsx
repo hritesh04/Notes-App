@@ -12,7 +12,6 @@ export default function ({
       <Appbar logedIN={logedIN} />
       <div
         style={{
-          display: "flex",
           width: "100%",
           height: "87vh",
           backgroundColor: "#ffff",

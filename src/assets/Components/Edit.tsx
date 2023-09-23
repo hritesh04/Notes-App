@@ -77,10 +77,11 @@ export default function () {
         }}
       >
         <Grid container>
-          <Grid item md={1.7} xs={0.01}>
+          <Grid item md={1.8} xs={0.01}>
             <div
               style={{
                 display: "flex",
+                maxHeight: "100vh",
                 marginTop: "65px",
                 justifyContent: "center",
                 width: "100%",
@@ -106,15 +107,14 @@ export default function () {
               </div>
             </div>
           </Grid>
-          <Grid item md={10.3} xs={11.99}>
+          <Grid item md={10.2} xs={11.99}>
             <div
               style={{
                 marginTop: "75px",
                 marginLeft: "5px",
-                boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                 padding: "15px",
-                height: "80vh",
-                width: "100%",
+                height: "74vh",
+                maxHeight: "112vh",
               }}
             >
               <h1
@@ -127,7 +127,7 @@ export default function () {
               <pre
                 contentEditable="true"
                 style={{
-                  minHeight: "70vh",
+                  minHeight: "60vh",
                   maxHeight: "88vh",
                   width: "100%",
                   outline: "none",
