@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import SignIN from "./SignIN";
 import SignUp from "./SignUp";
 
-export default function ({ logedIN = false }) {
+export default function ({ logedIN = false }: { logedIN: boolean }) {
   const [isSignnedIN, setIsSIgnnedIN] = useState(logedIN);
   const [signinPage, setSigninPage] = useState(false);
   const [signupPage, setSignupPage] = useState(false);
@@ -12,15 +12,16 @@ export default function ({ logedIN = false }) {
 
   const handleSignIn = () => {
     setSigninPage((prev) => !prev);
-    if (signupPage === true) setSignupPage((prev) => false);
+    if (signupPage === true) setSignupPage(false);
   };
 
   const handleSignUp = () => {
     setSignupPage((prev) => !prev);
-    if (signinPage === true) setSigninPage((prev) => false);
+    if (signinPage === true) setSigninPage(false);
   };
 
   const handleLogOut = () => {
+    localStorage.removeItem("token");
     navigate("/");
   };
 
@@ -34,7 +35,6 @@ export default function ({ logedIN = false }) {
             color: "black",
           }}
           onClick={handleSignIn}
-          className="btn"
         >
           SIGN IN
         </Button>
@@ -45,7 +45,6 @@ export default function ({ logedIN = false }) {
             color: "black",
           }}
           onClick={handleSignUp}
-          className="btn"
         >
           SIGN UP
         </Button>
@@ -57,7 +56,12 @@ export default function ({ logedIN = false }) {
     return (
       <>
         <p style={{ marginRight: "10px" }}>Name</p>
-        <button onClick={handleLogOut}>LOGOUT</button>
+        <Button
+          style={{ backgroundColor: "#ffff", color: "black" }}
+          onClick={handleLogOut}
+        >
+          LOGOUT
+        </Button>
       </>
     );
   }
@@ -68,7 +72,7 @@ export default function ({ logedIN = false }) {
         style={{
           height: "10vh",
           width: "100%",
-          position: "absolute",
+          position: "relative",
           zIndex: 2,
         }}
       >

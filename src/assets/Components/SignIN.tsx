@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
 import { Button } from "@mui/material";
+import handleSignIn from "../controller/handleSignIn";
 
 export default function ({ logedIN }) {
   const [login, setLogin] = useState("");
@@ -9,24 +10,9 @@ export default function ({ logedIN }) {
   const [pass, setPass] = useState("");
   const navigate = useNavigate();
 
-  const accounts = [
-    { id: "abc", password: 123 },
-    { id: "qwe", password: 456 },
-  ];
-
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    const account = accounts.find((acc) => acc.id === user);
-    if (account !== undefined) {
-      if ((account.password = parseInt(pass))) {
-        logedIN(true);
-        navigate("/dashboard");
-      } else {
-        setLogin("Wrong Password");
-      }
-    } else {
-      setLogin("Invalid Credentials");
-    }
+    handleSignIn(user, pass, logedIN, navigate, setLogin);
   };
 
   return (
@@ -42,19 +28,6 @@ export default function ({ logedIN }) {
           border: "1px solid black",
         }}
       >
-        <button
-          style={{
-            position: "absolute",
-            top: "6%",
-            right: "7%",
-            height: "10px",
-            width: "2px",
-            color: "#422605",
-            border: "none",
-          }}
-        >
-          &#10006;
-        </button>
         <input
           type="text"
           placeholder="username"
@@ -71,8 +44,8 @@ export default function ({ logedIN }) {
         <br />
         <Button
           style={{
-            marginTop: "10px",
-            marginLeft: "5px",
+            margin: "5px",
+
             color: "white",
             backgroundColor: "#422605",
           }}
@@ -80,7 +53,7 @@ export default function ({ logedIN }) {
         >
           Submit
         </Button>
-        <h1>{login}</h1>
+        <h3 style={{ color: "red" }}>{login}</h3>
       </Card>
     </>
   );

@@ -2,31 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
 import { Button } from "@mui/material";
+import handleSignUp from "../controller/handleSignUp";
 
 export default function ({ logedIN }) {
   const [login, setLogin] = useState("");
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const accounts = [
-    { id: "abc", password: 123 },
-    { id: "qwe", password: 456 },
-  ];
-
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    const account = accounts.find((acc) => acc.id === user);
-    if (account !== undefined) {
-      if ((account.password = parseInt(pass))) {
-        logedIN(true);
-        navigate("/dashboard");
-      } else {
-        setLogin("Wrong Password");
-      }
-    } else {
-      setLogin("Invalid Credentials");
-    }
+    handleSignUp(user, pass, email, logedIN, navigate, setLogin);
   };
 
   return (
@@ -42,19 +29,6 @@ export default function ({ logedIN }) {
           border: "1px solid black",
         }}
       >
-        <button
-          style={{
-            position: "absolute",
-            top: "6%",
-            right: "7%",
-            height: "10px",
-            width: "2px",
-            color: "#422605",
-            border: "none",
-          }}
-        >
-          &#10006;
-        </button>
         <input
           type="text"
           placeholder="username"
@@ -69,10 +43,16 @@ export default function ({ logedIN }) {
           onChange={(event) => setPass(event.target.value)}
         />
         <br />
+        <input
+          type="email"
+          placeholder="E-Mail"
+          style={{ margin: "5px" }}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+        <br />
         <Button
           style={{
-            marginTop: "10px",
-            marginLeft: "5px",
+            margin: "5px",
             color: "white",
             backgroundColor: "#422605",
           }}
