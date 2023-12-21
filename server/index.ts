@@ -12,9 +12,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const SECRET = process.env.SECRET;
+const SECRET = "AceSeCr3T";
 
-mongoose.connect(process.env.DB_LINK).then(() => console.log("DB Connected"));
+mongoose
+  .connect("mongodb://mongodb:27017/")
+  .then(() => console.log("DB Connected"));
 
 interface CreateNewUser {
   username: String;
